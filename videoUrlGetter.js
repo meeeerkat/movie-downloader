@@ -20,11 +20,11 @@ const browserArgs = [
 ];
 
 
-async function getVideoUrl(formatedName) {
-    return await puppeteer.launch({ args: browserArgs, headless: true }).then(async browser => {
+async function getVideoUrl(formattedName, isHeadless) {
+    return await puppeteer.launch({ args: browserArgs, headless: isHeadless }).then(async browser => {
         // Loading page
         const page = await browser.newPage();
-        await page.goto(util.format(playerUrlFormat, formatedName), { waitUntil: 'domcontentloaded' });
+        await page.goto(util.format(playerUrlFormat, formattedName), { waitUntil: 'domcontentloaded' });
         await page.waitForTimeout(1000);
 
         // Checking is the movie exists

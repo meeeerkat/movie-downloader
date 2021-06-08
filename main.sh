@@ -3,8 +3,9 @@
 
 function usage {
         echo "Usage: $(basename $0) [-no]" 2>&1
-        echo '   -n formattedName   to set the movie formated name'
-        echo '   -o outputPath      to set the output file'
+        echo '  -n formattedName    to set the movie formated name'
+        echo '  -o outputPath       to set the output file (not using this option will echo the download url)'
+        echo '  -d                  debug mode (headless=false)'
         exit 1
 }
 
@@ -13,10 +14,14 @@ if [[ $# -eq 0 ]]; then
    usage
 fi
 
-while getopts "n:o:" opt; do
+# Params default value
+URL_GETTER_IS_HEADLESS=1
+while getopts "n:o:dh" opt; do
     case $opt in
         n) NAME="$OPTARG" ;;
         o) OUTPUT_OPTION="-O $OPTARG" ;;
+        d) URL_GETTER_IS_HEADLESS=0 ;;
+        h) usage ;;
         \?)
             echo "Invalid option: -${OPTARG}."
             usage
@@ -29,7 +34,7 @@ done
 baseDir=$(dirname $(realpath $0))
 
 # Getting url
-videoUrlOrError=`node ${baseDir}/main.js $NAME`
+videoUrlOrError=`node ${baseDir}/main.js $NAME $URL_GETTER_IS_HEADLESS 2> /dev/null`
 
 # Checking movie existance
 if [ $? -eq 1 ]; then
@@ -37,7 +42,11 @@ if [ $? -eq 1 ]; then
     exit $?
 fi
 
-# Downloading it
-wget $videoUrlOrError $OUTPUT_OPTION
+if [ "$OUTPUT_OPTION" ]; then
+    # Downloading it
+    wget $videoUrlOrError $OUTPUT_OPTION
+else
+    echo $videoUrlOrError
+fi
 
 
