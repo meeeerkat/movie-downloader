@@ -25,20 +25,17 @@ async function getVideoUrl(formatedName) {
         // Loading page
         const page = await browser.newPage();
         await page.goto(util.format(playerUrlFormat, formatedName), { waitUntil: 'domcontentloaded' });
-        await page.screenshot({ path: '1.png', fullPage: true })
+        await page.waitForTimeout(1000);
 
         // Going to player (inside an iframe)
         const playerIframeUrl = await page.waitForSelector("#openloadIframe").then(async iframe => await (await iframe.getProperty('src')).jsonValue());
         await page.goto(playerIframeUrl, { waitUntil: 'networkidle2' });
-        await page.screenshot({ path: '2.png', fullPage: true })
 
         // Launching the movie
         await page.waitForSelector(".jwpreview.jwuniform").then(async button => await button.click());
-        await page.screenshot({ path: '3.png', fullPage: true })
 
         // Getting the movie's url
         const videoUrl = await page.waitForSelector(".jwmain .jwvideo video").then(async video => await (await video.getProperty('src')).jsonValue());
-        await page.screenshot({ path: '4.png', fullPage: true })
 
         browser.close();
         return videoUrl;
