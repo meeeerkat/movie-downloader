@@ -1,5 +1,14 @@
 
 const videoUrlGetter = require("./videoUrlGetter.js");
-videoUrlGetter.getVideoUrl(process.argv[2]).then(videoUrl => console.log(videoUrl));
 
+async function main() {
+    videoUrlGetter.getVideoUrl(process.argv[2])
+        .then(videoUrl => console.log(videoUrl))
+        .catch(e => {
+            console.log(e);
+            process.exit(1);
+        })
+}
+
+main()
 

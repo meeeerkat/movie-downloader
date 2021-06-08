@@ -27,6 +27,12 @@ async function getVideoUrl(formatedName) {
         await page.goto(util.format(playerUrlFormat, formatedName), { waitUntil: 'domcontentloaded' });
         await page.waitForTimeout(1000);
 
+        // Checking is the movie exists
+        const body = await page.waitForSelector('body');
+        const bodyContent = await body.evaluate(body => body.textContent);
+        if (bodyContent === 'Movie not available.')
+            throw('Movie does not exist.');
+
         // Going to player (inside an iframe)
         const playerIframeUrl = await page.waitForSelector("#openloadIframe").then(async iframe => await (await iframe.getProperty('src')).jsonValue());
         await page.goto(playerIframeUrl, { waitUntil: 'networkidle2' });
