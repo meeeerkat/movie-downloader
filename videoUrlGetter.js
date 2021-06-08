@@ -1,6 +1,4 @@
 
-
-
 // Constants
 const playerUrlFormat = 'https://123moviesplayer.com/movie/%s?src=mirror2';
 
@@ -23,22 +21,24 @@ const browserArgs = [
 
 
 async function getVideoUrl(formatedName) {
-
-
-    return await puppeteer.launch({ args: browserArgs, headless: false }).then(async browser => {
+    return await puppeteer.launch({ args: browserArgs, headless: true }).then(async browser => {
         // Loading page
         const page = await browser.newPage();
         await page.goto(util.format(playerUrlFormat, formatedName), { waitUntil: 'domcontentloaded' });
+        await page.screenshot({ path: '1.png', fullPage: true })
 
         // Going to player (inside an iframe)
         const playerIframeUrl = await page.waitForSelector("#openloadIframe").then(async iframe => await (await iframe.getProperty('src')).jsonValue());
         await page.goto(playerIframeUrl, { waitUntil: 'networkidle2' });
+        await page.screenshot({ path: '2.png', fullPage: true })
 
         // Launching the movie
         await page.waitForSelector(".jwpreview.jwuniform").then(async button => await button.click());
+        await page.screenshot({ path: '3.png', fullPage: true })
 
         // Getting the movie's url
         const videoUrl = await page.waitForSelector(".jwmain .jwvideo video").then(async video => await (await video.getProperty('src')).jsonValue());
+        await page.screenshot({ path: '4.png', fullPage: true })
 
         browser.close();
         return videoUrl;
@@ -46,6 +46,6 @@ async function getVideoUrl(formatedName) {
 
 }
 
-getVideoUrl('avatar').then(url => console.log(url));
+module.exports = { getVideoUrl };
 
 
