@@ -12,3 +12,8 @@ Some examples:
 - Fight club => fight-club
 - Thelma and Louise => thelma-louise
 - The World's End => the-worlds-end
+
+
+# Todo
+Add a research function  
+Add tv serie downloading support
