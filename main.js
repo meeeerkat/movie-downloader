@@ -1,5 +1,5 @@
 
-const videoUrlGetter = require("./videoUrlGetter.js");
+const videoUrlGetter = require("./video_url_getter.js");
 
 async function main(formattedName, isHeadless) {
     videoUrlGetter.getVideoUrl(formattedName, isHeadless)

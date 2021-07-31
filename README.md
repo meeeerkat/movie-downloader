@@ -1,7 +1,8 @@
 
-# Movie downloader
-A 1080p movie downloader using https://www.fmovies.top/ HD player  
+# Movie url getter
+A 1080p movie url getter using https://www.fmovies.top/ HD player  
 The entry point is the main.sh script (call main.sh and not another file)  
+To use with wget to download movies  
 TV Series support isn't implemented yet  
 
 ## Formatted name
@@ -13,6 +14,9 @@ Some examples:
 - Thelma and Louise => thelma-louise
 - The World's End => the-worlds-end
 
+# Downloading movies example
+With wget:  
+wget `movie-url-getter -n fight-club` -O fight-club.mp4  
 
 # Todo
 Add a research function  

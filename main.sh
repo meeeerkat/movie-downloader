@@ -4,7 +4,6 @@
 function usage {
         echo "Usage: $(basename $0) [-no]" 2>&1
         echo '  -n formattedName    to set the movie formated name'
-        echo '  -o outputPath       to set the output file (not using this option will echo the download url)'
         echo '  -d                  debug mode (headless=false)'
         exit 1
 }
@@ -16,10 +15,9 @@ fi
 
 # Params default value
 URL_GETTER_IS_HEADLESS=1
-while getopts "n:o:dh" opt; do
+while getopts "n:dh" opt; do
     case $opt in
         n) NAME="$OPTARG" ;;
-        o) OUTPUT_OPTION="-O $OPTARG" ;;
         d) URL_GETTER_IS_HEADLESS=0 ;;
         h) usage ;;
         \?)
@@ -42,11 +40,6 @@ if [ $? -eq 1 ]; then
     exit $?
 fi
 
-if [ "$OUTPUT_OPTION" ]; then
-    # Downloading it
-    wget $videoUrlOrError $OUTPUT_OPTION
-else
-    echo $videoUrlOrError
-fi
+echo $videoUrlOrError
 
 
