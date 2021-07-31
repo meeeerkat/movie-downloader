@@ -2,8 +2,7 @@
 
 
 function usage {
-        echo "Usage: $(basename $0) [-no]" 2>&1
-        echo '  -n formattedName    to set the movie formated name'
+        echo "Usage: $(basename $0) [OPTIONS] FORMATTED-NAME..." 2>&1
         echo '  -d                  debug mode (headless=false)'
         exit 1
 }
@@ -15,9 +14,8 @@ fi
 
 # Params default value
 URL_GETTER_IS_HEADLESS=1
-while getopts "n:dh" opt; do
+while getopts "dh" opt; do
     case $opt in
-        n) NAME="$OPTARG" ;;
         d) URL_GETTER_IS_HEADLESS=0 ;;
         h) usage ;;
         \?)
@@ -27,19 +25,17 @@ while getopts "n:dh" opt; do
     esac
 done
 
+shift $((OPTIND-1))
+
 # The script is linked so the ressources around it should be taken with absolute path
 # (Cause the link isn't near them)
 baseDir=$(dirname $(realpath $0))
+jsScriptPath="${baseDir}/main.js"
 
-# Getting url
-videoUrlOrError=`node ${baseDir}/main.js $NAME $URL_GETTER_IS_HEADLESS 2> /dev/null`
-
-# Checking movie existance
-if [ $? -eq 1 ]; then
-    echo $videoUrlOrError
-    exit $?
-fi
-
-echo $videoUrlOrError
-
+while test $# -gt 0; do
+    # Getting url
+    contentUrlOrError=`node $jsScriptPath $1 $URL_GETTER_IS_HEADLESS 2> /dev/null`
+    echo $contentUrlOrError
+    shift
+done
 
