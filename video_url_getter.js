@@ -1,11 +1,4 @@
 
-// Constants
-const playerUrlFormat = 'https://123moviesplayer.com/movie/%s?src=mirror2';
-
-
-// General helpers
-const util = require('util');
-
 // Setting up puppeteer
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
@@ -20,11 +13,12 @@ const browserArgs = [
 ];
 
 
-async function getVideoUrl(formattedName, isHeadless) {
+async function getVideoUrl(url, isHeadless) {
     return await puppeteer.launch({ args: browserArgs, headless: isHeadless }).then(async browser => {
         // Loading page
         const page = await browser.newPage();
-        await page.goto(util.format(playerUrlFormat, formattedName), { waitUntil: 'domcontentloaded' });
+
+        await page.goto(url, { waitUntil: 'domcontentloaded' });
         await page.waitForTimeout(1000);
 
         // Checking is the movie exists

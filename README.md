@@ -3,7 +3,14 @@
 A 1080p movie url getter using https://www.fmovies.top/ HD player  
 The entry point is the main.sh script (call main.sh and not another file)  
 To use with wget to download movies  
-TV Series support isn't implemented yet  
+
+# Tv series
+TV Series support is somewhat implemented  
+Need to use -s option and bash ranges  
+Example: to get the urls of all the episode of the first season of scrubs  
+movie-url-getter -s scrubs/01-{01..25}  
+Problem: Need to know the number of episodes in each season and cannot use this to get the urls of multiple seasons at once  
+
 
 ## Formatted name
 To find the right name you must go to this website and use their search (search from this tool hasn't been implemented yet).  

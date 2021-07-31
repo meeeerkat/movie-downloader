@@ -1,8 +1,8 @@
 
 const videoUrlGetter = require("./video_url_getter.js");
 
-async function main(formattedName, isHeadless) {
-    videoUrlGetter.getVideoUrl(formattedName, isHeadless)
+async function main(url, isHeadless) {
+    videoUrlGetter.getVideoUrl(url, isHeadless)
         .then(videoUrl => console.log(videoUrl))
         .catch(e => {
             console.log(e);
