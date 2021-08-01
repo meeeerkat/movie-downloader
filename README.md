@@ -1,16 +1,8 @@
 
-# Movie url getter
+# Movie downloader 
 A 1080p movie url getter using https://www.fmovies.top/ HD player  
 The entry point is the main.sh script (call main.sh and not another file)  
-To use with wget to download movies  
-
-# Tv series
-TV Series support is somewhat implemented  
-Need to use -s option and bash ranges  
-Example: to get the urls of all the episode of the first season of scrubs  
-movie-url-getter -s scrubs/01-{01..25}  
-Problem: Need to know the number of episodes in each season and cannot use this to get the urls of multiple seasons at once  
-
+Uses wget to download movies & series when the -o option is given  
 
 ## Formatted name
 To find the right name you must go to this website and use their search (search from this tool hasn't been implemented yet).  
@@ -22,9 +14,17 @@ Some examples:
 - The World's End => the-worlds-end
 
 # Downloading movies example
-With wget:  
-wget `movie-url-getter -n fight-club` -O fight-club.mp4  
+./main -o fight-club.mp4 fight-club  
+
+# Tv series
+TV Series support is somewhat implemented  
+Need to use -s option and bash ranges  
+In the output name, %index is replaced with the index of the url in the url list  
+Example: to get the urls of all the episode of the first season of scrubs  
+./main.sh -s -o scrubs-S01-%index.mp4 scrubs/01-{01..25}  
+Seasons & episodes numbers MUST be 2 digit long (add 0 before 1 digit numbers)  
+If the number of episodes is unknown, just put a big one (ex: 99), it will stop at the first that doesn't work.  
+Getting a download url for each episodes & then downloading them may not work because by the time the first episodes are downloaded, the tokens for the others (contained in the links) become outdated. Hence, the -o option is strongly recommanded for the downloading of many ressources at once (generates a link for a ressource & download it right away before generating the link for the next ressource).
 
 # Todo
 Add a research function  
-Add tv serie downloading support

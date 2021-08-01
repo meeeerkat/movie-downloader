@@ -11,6 +11,7 @@ VIDEO_URL_GETTER_SCRIPT_PATH="${BASE_DIR}/main.js"
 function usage {
         echo "Usage: $(basename $0) [OPTIONS] FORMATTED-NAME..." 2>&1
         echo '  -s                  FORMATTED-NAME(s) refers to a serie episode'
+        echo '  -o                  output name, can get the current url index by using %index'
         echo '  -d                  debug mode (headless=false)'
         exit 1
 }
@@ -31,10 +32,12 @@ fi
 # Params default value
 URL_GETTER_IS_HEADLESS=1
 IS_SERIE=0
-while getopts "sdh" opt; do
+OUTPUT_FORMAT=""
+while getopts "so:dh" opt; do
     case $opt in
         s) IS_SERIE=1 ;;
         d) URL_GETTER_IS_HEADLESS=0 ;;
+        o) OUTPUT_FORMAT="$OPTARG" ;;
         h) usage ;;
         \?)
             echo "Invalid option: -${OPTARG}."
@@ -45,10 +48,22 @@ done
 
 shift $((OPTIND-1))
 
+i=0
 while test $# -gt 0; do
     url=`makeUrl $1 $IS_SERIE`
+    output_filename=`echo "$OUTPUT_FORMAT" | sed -e "s/%index/$i/g"`
+
     contentUrlOrError=`node $VIDEO_URL_GETTER_SCRIPT_PATH $url $URL_GETTER_IS_HEADLESS 2> /dev/null`
-    echo $contentUrlOrError
+    if [[ ! "$OUTPUT_FORMAT" ]]; then
+        echo $contentUrlOrError
+    else
+        if ! wget $contentUrlOrError -O $output_filename; then
+            echo "Download of $output_filename failed"
+            exit -1
+        fi
+    fi
+
     shift
+    i=$((i+1))
 done
 
