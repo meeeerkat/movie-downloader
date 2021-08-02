@@ -13,13 +13,13 @@ Some examples:
 - Thelma and Louise => thelma-louise
 - The World's End => the-worlds-end
 
-# Downloading movies example
+## Downloading movies example
 ./main -o fight-club.mp4 fight-club  
 
-# Important
+## Important
 Downloading multiple files in parallel may fail & **not using the -d option can throw the same error (the url getting part gets timeouted)**.  
 
-# Tv series
+## Tv series
 TV Series support is somewhat implemented  
 Need to use -s option and bash ranges  
 In the output name, %index is replaced with the index of the url in the url list  
@@ -31,6 +31,6 @@ Seasons & episodes numbers MUST be 2 digit long (add 0 before 1 digit numbers)
 If the number of episodes is unknown, just put a big one (ex: 99), it will stop at the first that doesn't work.  
 Getting a download url for each episodes & then downloading them may not work because by the time the first episodes are downloaded, the tokens for the others (contained in the links) become outdated. Hence, the -o option is strongly recommanded for the downloading of many ressources at once (generates a link for a ressource & download it right away before generating the link for the next ressource).  
 
-# Todo
+## Todo
 Fix parallel execution (some ressources are not downloaded)  
 Add a research function  
