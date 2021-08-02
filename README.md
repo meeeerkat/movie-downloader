@@ -16,16 +16,21 @@ Some examples:
 # Downloading movies example
 ./main -o fight-club.mp4 fight-club  
 
+# Important
+Downloading multiple files in parallel may fail & **not using the -d option can throw the same error (the url getting part gets timeouted)**.  
+
 # Tv series
 TV Series support is somewhat implemented  
 Need to use -s option and bash ranges  
 In the output name, %index is replaced with the index of the url in the url list  
 Example: to get the urls of all the episode of the first season of scrubs  
-./main.sh -s -o scrubs-S01-%index.mp4 scrubs/01-{01..25}  
+./main.sh -sp -o scrubs/S%season/%episode.mp4 scrubs/01-{01..25}  
+Or to get all the episodes:  
+./main.sh -sp -o scrubs/S%season/%episode.mp4 scrubs/{01..07}-{01..25}  
 Seasons & episodes numbers MUST be 2 digit long (add 0 before 1 digit numbers)  
 If the number of episodes is unknown, just put a big one (ex: 99), it will stop at the first that doesn't work.  
-Getting a download url for each episodes & then downloading them may not work because by the time the first episodes are downloaded, the tokens for the others (contained in the links) become outdated. Hence, the -o option is strongly recommanded for the downloading of many ressources at once (generates a link for a ressource & download it right away before generating the link for the next ressource).
+Getting a download url for each episodes & then downloading them may not work because by the time the first episodes are downloaded, the tokens for the others (contained in the links) become outdated. Hence, the -o option is strongly recommanded for the downloading of many ressources at once (generates a link for a ressource & download it right away before generating the link for the next ressource).  
 
 # Todo
-Fix parallel execution (some ressources are not downloaded + at the end the program just goes on with errors)  
+Fix parallel execution (some ressources are not downloaded)  
 Add a research function  

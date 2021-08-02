@@ -19,7 +19,7 @@ function handle_ressource {
         if [[ ! "$OUTPUT_FORMAT" ]]; then
             echo $contentUrlOrError
         else
-            if ! wget $contentUrlOrError -O $output_filename 2; then
+            if ! wget $contentUrlOrError -c -O $output_filename; then
                 echo "Download of $output_filename failed"
                 return -1
             fi
@@ -29,12 +29,21 @@ function handle_ressource {
     return 0
 }
 
+function get_season_nb {
+    echo "$1" | sed -n 's/.\+\/\([[:digit:]]\+\)-\([[:digit:]]\+\)/\1/p'
+}
+function get_episode_nb {
+    echo "$1" | sed -n 's/.\+\/\([[:digit:]]\+\)-\([[:digit:]]\+\)/\2/p'
+}
 
 function usage {
         echo "Usage: $(basename $0) [OPTIONS] FORMATTED-NAME..." 2>&1
         echo '  -s                  FORMATTED-NAME(s) refers to a serie episode'
         echo '  -p                  parallel mode'
-        echo '  -o                  output name, can get the current url index by using %index'
+        echo '  -o                  output name: 
+                                        %index -> index in args
+                                        %episode -> episode number (-s only)
+                                        %season -> season number (-s only)'
         echo '  -d                  debug mode (headless=false)'
         exit 1
 }
@@ -76,7 +85,16 @@ shift $((OPTIND-1))
 i=1
 while test $# -gt 0; do
     url=`makeUrl $1 $IS_SERIE`
-    output_filename=`echo "$OUTPUT_FORMAT" | sed -e "s/%index/$i/g"`
+    output_filename=`echo "$OUTPUT_FORMAT"`
+
+    # Setting the variables
+    output_filename=`echo "$output_filename" | sed -e "s/%index/$i/g"`
+    if [[ "$IS_SERIE" -eq 1 ]]; then
+        season_nb=`get_season_nb $1`
+        episode_nb=`get_episode_nb $1`
+        output_filename=`echo "$output_filename" | sed -e "s/%season/$season_nb/g"`
+        output_filename=`echo "$output_filename" | sed -e "s/%episode/$episode_nb/g"`
+    fi
 
     if [[ "$IS_PARALLEL" -eq 1 ]]; then
         handle_ressource "$url" "$output_filename" &
