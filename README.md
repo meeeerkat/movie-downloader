@@ -32,5 +32,7 @@ If the number of episodes is unknown, just put a big one (ex: 99), it will stop 
 Getting a download url for each episodes & then downloading them may not work because by the time the first episodes are downloaded, the tokens for the others (contained in the links) become outdated. Hence, the -o option is strongly recommanded for the downloading of many ressources at once (generates a link for a ressource & download it right away before generating the link for the next ressource).  
 
 ## Todo
-Fix parallel execution (some ressources are not downloaded)  
+Fix parallel execution (some ressources are not downloaded):  
+- First get all the urls & only then start downloading files (to make sure there is as little timeouts as possible)
+- Handle video\_url\_getter errors & retries
 Add a research function  
