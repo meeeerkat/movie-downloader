@@ -33,6 +33,6 @@ Getting a download url for each episodes & then downloading them may not work be
 
 ## Todo
 Fix parallel execution (some ressources are not downloaded):  
-- First get all the urls & only then start downloading files (to make sure there is as little timeouts as possible)
-- Handle video\_url\_getter errors & retries
-Add a research function  
+- Handle video\_url\_getter errors & retries  
+Add an option so that downloads are not stopped when an entry isn't available
+Add a search function  
