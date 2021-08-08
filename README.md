@@ -18,6 +18,8 @@ Some examples:
 
 ## Important
 Downloading multiple files in parallel may fail & **not using the -d option can throw the same error (the url getting part gets timeouted)**.  
+The upload rate on each ressource may be slow which is why a large number of parallel processes is so great but the ressources' source only accepts 5-6 connexions at once and returns a HTTP 503 error for any other request, limiting the number of concurrent requests to less than 6 is necessary for a smooth download.  
+One can try to download more than 6 files simutaneously (and this will be faster) but some files may get errors and never be downloaded (so each file will have to be specifically downloaded by the user).  
 
 ## Tv series
 TV Series support is somewhat implemented  
@@ -34,5 +36,5 @@ Getting a download url for each episodes & then downloading them may not work be
 ## Todo
 Fix parallel execution (some ressources are not downloaded):  
 - Handle video\_url\_getter errors & retries  
-Add an option so that downloads are not stopped when an entry isn't available
+Add an option so that downloads are not stopped when an entry isn't available  
 Add a search function  

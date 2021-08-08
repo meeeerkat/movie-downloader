@@ -47,6 +47,9 @@ done
 
 shift $((OPTIND-1))
 
+
+
+
 ## Functions using arguments (they are never modified, only read)
 function get_season_nb {
     echo "$1" | sed -n 's/.\+\/\([[:digit:]]\+\)-\([[:digit:]]\+\)/\1/p'
