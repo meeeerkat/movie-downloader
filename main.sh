@@ -1,17 +1,14 @@
 #!/bin/sh
 
-
-
-# The script is linked so the ressources around it should be taken with absolute path
-# (Cause the link isn't near them)
 BASE_DIR=$(dirname $(realpath $0))
-VIDEO_URL_GETTER_SCRIPT_PATH="${BASE_DIR}/main.js"
+RESSOURCE_HANDLER_SCRIPT_PATH="${BASE_DIR}/ressource_handler.sh"
+
 
 
 function usage {
         echo "Usage: $(basename $0) [OPTIONS] FORMATTED-NAME..." 2>&1
         echo '  -s                  FORMATTED-NAME(s) refers to a serie episode'
-        echo '  -p                  parallel mode (downloading part only)'
+        echo '  -p process_nbs      parallel mode'
         echo '  -o                  output name: 
                                         %index -> index in args
                                         %episode -> episode number (-s only)
@@ -20,25 +17,7 @@ function usage {
         exit 1
 }
 
-function download_ressource {
-    ressource_url="$1"
-    output_filename="$2"
 
-    if ! wget "$ressource_url" -c -O $output_filename; then
-        echo "Download of $output_filename failed"
-        return -1
-    fi
-    
-    return 0
-}
-
-function makeUrl {
-    if [[ "$2" -eq 0 ]]; then
-        echo "https://123moviesplayer.com/movie/$1?src=mirror2"
-    else
-        echo "https://123moviesplayer.com/show/$1?src=mirror2"
-    fi
-}
 
 
 
@@ -49,25 +28,24 @@ if [[ $# -eq 0 ]]; then
 fi
 
 IS_SERIE=0
-IS_PARALLEL=0
+MAX_PARALLEL_PROCESSES_NB=1
 OUTPUT_FORMAT=""
 URL_GETTER_IS_HEADLESS=1
-while getopts "spo:dh" opt; do
+while getopts "sp:o:dh" opt; do
     case $opt in
         s) IS_SERIE=1 ;;
-        p) IS_PARALLEL=1 ;;
+        p) MAX_PARALLEL_PROCESSES_NB="$OPTARG" ;;
         d) URL_GETTER_IS_HEADLESS=0 ;;
         o) OUTPUT_FORMAT="$OPTARG" ;;
         h) usage ;;
         \?)
-            echo "Invalid option: -${OPTARG}."
+            echo "Invalid option: -$OPTARG."
             usage
             ;;
     esac
 done
 
 shift $((OPTIND-1))
-
 
 ## Functions using arguments (they are never modified, only read)
 function get_season_nb {
@@ -97,60 +75,39 @@ function get_output_filename {
     echo "$output_filename"
 }
 
-function handle_ressource {
-    ressource_locator="$1"
-    ressource_url="$2"
-    index=$3
-
-    if [[ ! "$OUTPUT_FORMAT" ]]; then
-        echo "$ressource_url"
+function make_url {
+    if [[ $IS_SERIE -eq 0 ]]; then
+        echo "https://123moviesplayer.com/movie/$1?src=mirror2"
     else
-        output_filename=`get_output_filename "$ressource_locator" $index`
-        if [[ $IS_PARALLEL -eq 1 ]]; then
-            download_ressource "$ressource_url" "$output_filename" &
-        else
-            download_ressource "$ressource_url" "$output_filename"
-        fi
+        echo "https://123moviesplayer.com/show/$1?src=mirror2"
     fi
 }
 
 
+
+
+
 ## Actual code
-declare -a ressources_urls
-declare -a ressources_locators 
+args=""
 i=1
 while test $# -gt 0; do
-    url=`makeUrl "$1" $IS_SERIE`
-
-    ressources_urls[$i]=`node $VIDEO_URL_GETTER_SCRIPT_PATH $url $URL_GETTER_IS_HEADLESS 2> /dev/null`
-    exit_code=$?
-    while [[ $exit_code -lt 0 ]]; do
-        ressources_urls[$i]=`node $VIDEO_URL_GETTER_SCRIPT_PATH $url $URL_GETTER_IS_HEADLESS 2> /dev/null`
-        exit_code=$?
-    done 
-    
-    if [[ $exit_code -ne 0 ]]; then
-        break
+    ressource_locator="$1"
+    url=`make_url "$ressource_locator"`
+    if [[ "$OUTPUT_FORMAT" ]]; then
+        output_filename=`get_output_filename "$ressource_locator" $i`
+        args="$args $URL_GETTER_IS_HEADLESS "$url" "$output_filename""
+    else
+        args="$args $URL_GETTER_IS_HEADLESS "$url""
     fi
-
-    # Ressource locator is set only if the ressource url already is (for the parallel part below)
-    ressources_locators[$i]="$1"
-
-    if [[ $IS_PARALLEL -eq 0 ]]; then
-        handle_ressource "${ressources_locators[$i]}" "${ressources_urls[$i]}" $i
-    fi
-
     
     i=$(( $i+1 ))
     shift
 done
 
-
-if [[ $IS_PARALLEL -eq 1 ]]; then
-    for i in "${!ressources_locators[@]}"; do
-        handle_ressource "${ressources_locators[$i]}" "${ressources_urls[$i]}" $i
-    done
-
-    wait
+max_args_nb=2
+if [[ "$OUTPUT_FORMAT" ]]; then
+    max_args_nb=$(( $max_args_nb+1 ))
 fi
+
+echo $args | xargs --max-args=$max_args_nb -P $MAX_PARALLEL_PROCESSES_NB $RESSOURCE_HANDLER_SCRIPT_PATH
 

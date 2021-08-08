@@ -18,8 +18,12 @@ async function getVideoUrl(url, isHeadless) {
         // Loading page
         const page = await browser.newPage();
 
-        await page.goto(url, { waitUntil: 'domcontentloaded' });
-        await page.waitForTimeout(1000);
+        try {
+            await page.goto(url, { waitUntil: 'domcontentloaded' });
+            await page.waitForTimeout(1000);
+        } catch(e) {
+            throw -1
+        }
 
         // Checking is the movie exists
         const body = await page.waitForSelector('body');
