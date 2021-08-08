@@ -27,7 +27,7 @@ if [[ ! "$OUTPUT_FILENAME" ]]; then
 else
     if ! wget "$ressource_url" -c -O $OUTPUT_FILENAME; then
         echo "Download of $OUTPUT_FILENAME failed"
-        exit -1
+        exit 0
     fi
 fi
 
