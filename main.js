@@ -5,8 +5,7 @@ async function main(url, isHeadless) {
     videoUrlGetter.getVideoUrl(url, isHeadless)
         .then(videoUrl => console.log(videoUrl))
         .catch(e => {
-            console.log(e);
-            process.exit(1);
+            process.exit(e);
         })
 }
 

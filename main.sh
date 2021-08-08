@@ -122,16 +122,24 @@ i=1
 while test $# -gt 0; do
     url=`makeUrl "$1" $IS_SERIE`
 
-    ressources_locators[$i]="$1"
     ressources_urls[$i]=`node $VIDEO_URL_GETTER_SCRIPT_PATH $url $URL_GETTER_IS_HEADLESS 2> /dev/null`
-    if [[ $? -ne 0 ]]; then
-        # TODO: handle errors
-        echo ERROR
+    exit_code=$?
+    while [[ $exit_code -lt 0 ]]; do
+        ressources_urls[$i]=`node $VIDEO_URL_GETTER_SCRIPT_PATH $url $URL_GETTER_IS_HEADLESS 2> /dev/null`
+        exit_code=$?
+    done 
+    
+    if [[ $exit_code -ne 0 ]]; then
+        break
     fi
+
+    # Ressource locator is set only if the ressource url already is (for the parallel part below)
+    ressources_locators[$i]="$1"
 
     if [[ $IS_PARALLEL -eq 0 ]]; then
         handle_ressource "${ressources_locators[$i]}" "${ressources_urls[$i]}" $i
     fi
+
     
     i=$(( $i+1 ))
     shift

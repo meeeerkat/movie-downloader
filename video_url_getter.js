@@ -24,8 +24,9 @@ async function getVideoUrl(url, isHeadless) {
         // Checking is the movie exists
         const body = await page.waitForSelector('body');
         const bodyContent = await body.evaluate(body => body.textContent);
-        if (bodyContent === 'Movie not available.')
-            throw('Movie does not exist.');
+        if (bodyContent === 'Movie not available.'
+            || bodyContent === 'Episode not available.')
+            throw 1
 
         // Going to player (inside an iframe)
         const playerIframeUrl = await page.waitForSelector("#openloadIframe").then(async iframe => await (await iframe.getProperty('src')).jsonValue());
