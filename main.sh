@@ -32,13 +32,6 @@ function download_ressource {
     return 0
 }
 
-function get_season_nb {
-    echo "$1" | sed -n 's/.\+\/\([[:digit:]]\+\)-\([[:digit:]]\+\)/\1/p'
-}
-function get_episode_nb {
-    echo "$1" | sed -n 's/.\+\/\([[:digit:]]\+\)-\([[:digit:]]\+\)/\2/p'
-}
-
 function makeUrl {
     if [[ "$2" -eq 0 ]]; then
         echo "https://123moviesplayer.com/movie/$1?src=mirror2"
@@ -50,12 +43,11 @@ function makeUrl {
 
 
 
-# Argument parsing & checking
+## Arguments getting
 if [[ $# -eq 0 ]]; then
    usage
 fi
 
-# Params default value
 IS_SERIE=0
 IS_PARALLEL=0
 OUTPUT_FORMAT=""
@@ -77,7 +69,13 @@ done
 shift $((OPTIND-1))
 
 
-
+## Functions using arguments (they are never modified, only read)
+function get_season_nb {
+    echo "$1" | sed -n 's/.\+\/\([[:digit:]]\+\)-\([[:digit:]]\+\)/\1/p'
+}
+function get_episode_nb {
+    echo "$1" | sed -n 's/.\+\/\([[:digit:]]\+\)-\([[:digit:]]\+\)/\2/p'
+}
 function get_output_filename {
     ressource_locator="$1"
     index="$2"
@@ -117,6 +115,7 @@ function handle_ressource {
 }
 
 
+## Actual code
 declare -a ressources_urls
 declare -a ressources_locators 
 i=1
