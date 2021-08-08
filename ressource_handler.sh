@@ -11,10 +11,6 @@ IS_HEADLESS="$1"
 URL="$2"
 OUTPUT_FILENAME="$3"
 
-echo $IS_HEADLESS
-echo $URL
-echo $OUTPUT_FILENAME
-
 ressource_url=`node $VIDEO_URL_GETTER_SCRIPT_PATH $URL $IS_HEADLESS 2> /dev/null`
 exit_code=$?
 while [[ $exit_code -lt 0 ]]; do
