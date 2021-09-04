@@ -4,6 +4,14 @@ A 1080p movie url getter using https://www.fmovies.top/ HD player
 The entry point is the main.sh script (call main.sh and not another file)  
 Uses wget to download movies & series when the -o option is given  
 
+## Dependencies
+- nodejs
+- npm (to easily install the dependencies listed below)
+    - puppeteer
+    - puppeteer-extra-plugin
+        - puppeteer-extra-plugin-stealth
+        - puppeteer-extra-plugin-adblocker
+
 ## Formatted name
 To find the right name you must go to this website and use their search (search from this tool hasn't been implemented yet).  
 The name you're looking for is the last part of the url: https://www.fmovies.top/movies/movie-name/  
