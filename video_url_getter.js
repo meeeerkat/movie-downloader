@@ -9,7 +9,8 @@ puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 const browserArgs = [
     '--disable-features=site-per-process', // Necessary to work with an iframe
-    '--start-maximized'
+    '--start-maximized',
+    '--ignore-certificate-errors'
 ];
 
 

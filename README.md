@@ -42,6 +42,9 @@ If the number of episodes is unknown, just put a big one (ex: 99), it will stop 
 Getting a download url for each episodes & then downloading them may not work because by the time the first episodes are downloaded, the tokens for the others (contained in the links) become outdated. Hence, the -o option is strongly recommanded for the downloading of many ressources at once (generates a link for a ressource & download it right away before generating the link for the next ressource).  
 
 ## Todo
+ressource\_handler should do more and use getops (be a program usable on it's own for single downloads and main.sh is only built on this tool for more complex downloads)  
+wget --no-check-certificate & puppeteer's '--ignore-certificate-errors' options should be used only when a specific parameter is provided to ressource\_handler (just to make sure the user knows not to trust the downloaded content)  
 Fix parallel execution (some ressources are not downloaded): Handle video\_url\_getter errors & retries  
 Add an option so that downloads are not stopped when an entry isn't available  
 Add a search function  
+

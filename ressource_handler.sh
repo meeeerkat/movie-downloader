@@ -25,7 +25,7 @@ fi
 if [[ ! "$OUTPUT_FILENAME" ]]; then
     echo "$ressource_url"
 else
-    if ! wget "$ressource_url" -c -O $OUTPUT_FILENAME; then
+    if ! wget "$ressource_url" --no-check-certificate -c -O $OUTPUT_FILENAME; then
         echo "Download of $OUTPUT_FILENAME failed"
         exit 0
     fi
