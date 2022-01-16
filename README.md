@@ -1,4 +1,6 @@
 
+# This project is now obsolete, it does not work anymore and will not be fixed anytime soon
+
 # Movie downloader 
 A 1080p movie url getter using https://www.fmovies.top/ HD player  
 The entry point is the main.sh script (call main.sh and not another file)  
